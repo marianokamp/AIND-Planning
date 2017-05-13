@@ -49,7 +49,7 @@ def encode_state(fs: FluentState, fluent_map: list) -> str:
             state_tf.append('T')
         else:
             state_tf.append('F')
-    print("encode_state() fs=", fs, "fmap",  fluent_map, "result", "".join(state_tf)) #DEBUG
+    #print("encode_state() fs=", fs, "fmap",  fluent_map, "result", "".join(state_tf)) #DEBUG
     return "".join(state_tf)
 
 
