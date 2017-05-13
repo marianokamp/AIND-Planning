@@ -80,6 +80,7 @@ class PropKB(KB):
         if sentence:
             self.tell(sentence)
 
+    # FIXME Seems to just contain the positive sentences, see actions()
     def tell(self, sentence):
         "Add the sentence's clauses to the KB."
         self.clauses.extend(conjuncts(to_cnf(sentence)))
