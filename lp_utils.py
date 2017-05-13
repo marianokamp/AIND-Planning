@@ -17,6 +17,8 @@ class FluentState():
     def pos_sentence(self):
         return expr(conjunctive_sentence(self.pos, []))
 
+    def __str__(self):
+        return str(self.sentence())
 
 def conjunctive_sentence(pos_list, neg_list):
     """ returns expr conjuntive sentence given positive and negative fluent lists
@@ -47,6 +49,7 @@ def encode_state(fs: FluentState, fluent_map: list) -> str:
             state_tf.append('T')
         else:
             state_tf.append('F')
+    print("encode_state() fs=", fs, "fmap",  fluent_map, "result", "".join(state_tf)) #DEBUG
     return "".join(state_tf)
 
 
