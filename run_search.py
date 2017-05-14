@@ -57,12 +57,12 @@ def run_search(problem, search_function, parameter=None):
         node = search_function(ip, parameter)
     else:
         node = search_function(ip)
-    end = timer()
+    elapsed_time = timer() - start
     print("\nExpansions   Goal Tests   New Nodes")
     print("{}\n".format(ip))
-    show_solution(node, end - start)
+    show_solution(node, elapsed_time, problem)
     print()
-
+    return ip, elapsed_time
 
 def manual():
 
@@ -90,6 +90,8 @@ def main(p_choices, s_choices):
     problems = [PROBLEMS[i-1] for i in map(int, p_choices)]
     searches = [SEARCHES[i-1] for i in map(int, s_choices)]
 
+    results = []
+
     for pname, p in problems:
 
         for sname, s, h in searches:
@@ -98,10 +100,31 @@ def main(p_choices, s_choices):
 
             _p = p()
             _h = None if not h else getattr(_p, h)
-            run_search(_p, s, _h)
+            pp, elapsed_time = run_search(_p, s, _h)
+            results.append([pname, sname, elapsed_time, pp.succs, pp.goal_tests, pp.states])
+    
+    import pandas as pd
+    res = pd.DataFrame(results, columns=['Problem', 'Search', 'Elapsed Time', 'Node Expansions',
+                                         'Search Function', 'Parameter'])
+    visualize(res)
 
+def visualize(result):
+    from altair import LayeredChart, Chart
 
-def show_solution(node, elapsed_time):
+    print("res", result)
+
+    #chart = LayeredChart(result)
+    #chart += Chart().mark_line().encode(x='Search:O', y='Elapsed Time:Q')
+    
+
+#    chart = Chart(result).mark_point().encode(
+#        color='Search Function', x='Search Problem', y='Elapsed Time')
+#    html = chart.to_html()
+#    with open('out.html', 'w') as f:
+#       f.write(html) 
+#    chart.savechart("out.svg")
+
+def show_solution(node, elapsed_time, problem):
     print("Plan length: {}  Time elapsed in seconds: {}".format(len(node.solution()), elapsed_time))
     for action in node.solution():
         print("{}{}".format(action.name, action.args))
