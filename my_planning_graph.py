@@ -561,17 +561,3 @@ class PlanningGraph():
                     level_sum += level
                     break
         return level_sum
-                
-        
-        for clause in self.problem.goal:
-            found_goal_yet = False
-            for level in range(len(self.s_levels)):
-                for state in self.s_levels[level]:
-                    if state.symbol == clause:
-                        found_goal_yet = True
-                        level_sum += level
-                        break # next state
-                if found_goal_yet:
-                    break # next clause
-
-        return level_sum
