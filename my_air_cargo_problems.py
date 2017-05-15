@@ -131,7 +131,7 @@ class AirCargoProblem(Problem):
 
         return load_actions() + unload_actions() + fly_actions()
 
-    def actions(self, state: str) -> list:
+    def actions(self, state: str, check_preconditions = True) -> list:
         """ Return the actions that can be executed in the given state.
 
         :param state: str
@@ -146,17 +146,18 @@ class AirCargoProblem(Problem):
         for action in self.actions_list:
             is_possible = True
            
-            for clause in action.precond_pos:
-                # If precondition not met action not possible
-                if clause not in kb.clauses: 
-                    is_possible = False
-                    break
-                # If a fluent is not allowed as precondition, but is still
-                # there then the action is not possible as well
-            for clause in action.precond_neg:
-                if clause in kb.clauses:
-                    is_possible = False
-                    break
+            if check_preconditions:
+                for clause in action.precond_pos:
+                    # If precondition not met action not possible
+                    if clause not in kb.clauses: 
+                        is_possible = False
+                        break
+                    # If a fluent is not allowed as precondition, but is still
+                    # there then the action is not possible as well
+                for clause in action.precond_neg:
+                    if clause in kb.clauses:
+                        is_possible = False
+                        break
         
             if is_possible:
                 possible_actions.append(action)
@@ -244,6 +245,12 @@ class AirCargoProblem(Problem):
         """
         # TODO implement (see Russell-Norvig Ed-3 10.2.3  or Russell-Norvig Ed-2 11.2)
         count = 0
+        
+        actions = self.actions(node.state, False)
+        for clause in self.goal:
+            if clause not in actions:
+                count += 1
+
         return count
 
 
