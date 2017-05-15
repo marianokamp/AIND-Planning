@@ -421,7 +421,6 @@ class PlanningGraph():
         for effect in node_a2.action.effect_add:
             if effect in node_a1.action.effect_rem:
                 return True
-
        
         return False
 
@@ -506,8 +505,9 @@ class PlanningGraph():
         :param node_s2: PgNode_s
         :return: bool
         """
-        # TODO test for negation between nodes
-        return False
+        # test for negation between nodes
+        
+        return node_s1.symbol == node_s2.symbol and node_s1.is_pos != node_s2.is_pos
 
     def inconsistent_support_mutex(self, node_s1: PgNode_s, node_s2: PgNode_s):
         """
@@ -525,8 +525,24 @@ class PlanningGraph():
         :param node_s2: PgNode_s
         :return: bool
         """
-        # TODO test for Inconsistent Support between nodes
-        return False
+        # test for Inconsistent Support between nodes
+        
+        #return not all(parent_s1.is_mutex(parent_s2) for parent_s1 in node_s1.parents for parent_s2 in node_s2.parents)
+        #return any(not parent_s1.is_mutex(parent_s2) for parent_s1 in node_s1.parents for parent_s2 in node_s2.parents)
+        
+        #for parent_s1 in node_s1.parents:
+            #all(
+            #for parent_s2 in node_s2.parents:
+            #    if parent_s1.is_mutex(parent_s2):
+            #        return False
+        
+        
+        # Find one nonmutex
+        for parent_s1 in node_s1.parents:
+            for parent_s2 in node_s2.parents:
+                if not parent_s1.is_mutex(parent_s2):
+                    return False
+        return True
 
     def h_levelsum(self) -> int:
         """The sum of the level costs of the individual goals (admissible if goals independent)
@@ -534,6 +550,28 @@ class PlanningGraph():
         :return: int
         """
         level_sum = 0
-        # TODO implement
+        # implement
         # for each goal in the problem, determine the level cost, then add them together
+        
+        for goal in self.problem.goal:
+            goal_node = PgNode_s(goal, True)
+            # Iterate with index over each level's states
+            for level, states in enumerate(self.s_levels):
+                if goal_node in states:
+                    level_sum += level
+                    break
+        return level_sum
+                
+        
+        for clause in self.problem.goal:
+            found_goal_yet = False
+            for level in range(len(self.s_levels)):
+                for state in self.s_levels[level]:
+                    if state.symbol == clause:
+                        found_goal_yet = True
+                        level_sum += level
+                        break # next state
+                if found_goal_yet:
+                    break # next clause
+
         return level_sum
