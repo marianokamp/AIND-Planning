@@ -310,6 +310,19 @@ class PlanningGraph():
         #   set iff all prerequisite literals for the action hold in S0.  This can be accomplished by testing
         #   to see if a proposed PgNode_a has prenodes that are a subset of the previous S level.  Once an
         #   action node is added, it MUST be connected to the S node instances in the appropriate s_level set.
+        nodes = []
+        for action in self.all_actions:
+            action_node = PgNode_a(action)
+
+            if action_node.prenodes.issubset(self.s_levels[level]):
+                nodes.append(action_node)
+                # connect to state from where the action is launched
+                # and to state that results from this action
+                for state_node in self.s_levels[level]:
+                    state_node.children.add(action_node)
+                    state_node.parents.add(action_node)
+        # new action level
+        self.a_levels.append(nodes)
 
     def add_literal_level(self, level):
         """ add an S (literal) level to the Planning Graph
@@ -323,11 +336,25 @@ class PlanningGraph():
         # TODO add literal S level to the planning graph as described in the Russell-Norvig text
         # 1. determine what literals to add
         # 2. connect the nodes
+        
+        state_nodes = set()
+
         # for example, every A node in the previous level has a list of S nodes in effnodes that represent the effect
-        #   produced by the action.  These literals will all be part of the new S level.  Since we are working with sets, they
+        # produced by the action. 
+        
+        for action_node in self.a_levels[level-1]:
+            for state_node in action_node.effnodes:
+                
+        # These literals will all be part of the new S level.  Since we are working with sets, they
         #   may be "added" to the set without fear of duplication.  However, it is important to then correctly create and connect
         #   all of the new S nodes as children of all the A nodes that could produce them, and likewise add the A nodes to the
         #   parent sets of the S nodes
+
+                state_nodes.add(state_node)
+                state_node.parents.add(action_node)
+                state_node.children.add(action_node)
+        
+        self.s_levels.append(state_nodes)
 
     def update_a_mutex(self, nodeset):
         """ Determine and update sibling mutual exclusion for A-level nodes
