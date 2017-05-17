@@ -23,9 +23,9 @@ You must either use the -m flag to run in manual mode, or use both the -p and
 choices for each include:
 """
 
-PROBLEMS = [["Air Cargo Problem 1", air_cargo_p1],
-            ["Air Cargo Problem 2", air_cargo_p2],
-            ["Air Cargo Problem 3", air_cargo_p3]]
+PROBLEMS = [["ACP 1", air_cargo_p1],
+            ["ACP 2", air_cargo_p2],
+            ["ACP 3", air_cargo_p3]]
 SEARCHES = [["breadth_first_search", breadth_first_search, ""],
             ['breadth_first_tree_search', breadth_first_tree_search, ""],
             ['depth_first_graph_search', depth_first_graph_search, ""],
@@ -101,28 +101,32 @@ def main(p_choices, s_choices):
             _p = p()
             _h = None if not h else getattr(_p, h)
             pp, elapsed_time = run_search(_p, s, _h)
-            results.append([pname, sname, elapsed_time, pp.succs, pp.goal_tests, pp.states])
-    
+            results.append([pname, sname+" "+h, elapsed_time, pp.succs, pp.goal_tests, pp.states])
+
+
     import pandas as pd
-    res = pd.DataFrame(results, columns=['Problem', 'Search', 'Elapsed Time', 'Node Expansions',
-                                         'Search Function', 'Parameter'])
+    res = pd.DataFrame(results, columns=['Problem', 'Search', 'Elapsed Time (s)', 'Node Expansions',
+                                         'Goal Tests', 'New Nodes'])
+
+    print(res.to_csv(sep='|', index=False, float_format='%.2f')) 
+    #print(res.to_html())
+
     visualize(res)
 
 def visualize(result):
-    from altair import LayeredChart, Chart
+    from altair import Chart, Y, Scale
 
-    print("res", result)
 
     #chart = LayeredChart(result)
     #chart += Chart().mark_line().encode(x='Search:O', y='Elapsed Time:Q')
     
 
-#    chart = Chart(result).mark_point().encode(
-#        color='Search Function', x='Search Problem', y='Elapsed Time')
-#    html = chart.to_html()
+    chart = Chart(result).mark_point().encode(
+        x='Search:O', color='Problem:O', y=Y('Elapsed Time (s):Q', scale=Scale(type='log')))
+       # x='Search:O', color='Problem:O', y='Elapsed Time (s):Q')
 #    with open('out.html', 'w') as f:
 #       f.write(html) 
-#    chart.savechart("out.svg")
+    chart.savechart("out.svg")
 
 def show_solution(node, elapsed_time, problem):
     print("Plan length: {}  Time elapsed in seconds: {}".format(len(node.solution()), elapsed_time))
