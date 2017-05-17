@@ -21,14 +21,14 @@ xxx
 __What was the best heuristic used in these problems? Was it better than
 non-heuristic search planning methods for all problems? Why or why not?__
 
-![Image](out.svg)
+![Image](out.png)
 
 __Provide tables or other visual aids as needed for clarity in your
 discussion.__
 xxx
 
- |Prob.|Search|t (s)|N Exp|Goal T.|New N.
- |-      | -    |    -       | -             |   -           |   - 
+ |Prob.|Search|t (s)|Size|N Exp|Goal T.|New N.
+ |-      | -    |    -   | -    | -             |   -           |   - 
 ACP 1|greedy_best_first_graph_search h_1|0.01|7|9|28
 ACP 1|astar_search h_pg_levelsum|0.55|11|13|50
 ACP 2|greedy_best_first_graph_search h_1|2.77|998|1000|8982

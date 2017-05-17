@@ -62,7 +62,7 @@ def run_search(problem, search_function, parameter=None):
     print("{}\n".format(ip))
     show_solution(node, elapsed_time, problem)
     print()
-    return ip, elapsed_time
+    return ip, elapsed_time, node
 
 def manual():
 
@@ -100,21 +100,27 @@ def main(p_choices, s_choices):
 
             _p = p()
             _h = None if not h else getattr(_p, h)
-            pp, elapsed_time = run_search(_p, s, _h)
-            results.append([pname, sname+" "+h, elapsed_time, pp.succs, pp.goal_tests, pp.states])
+            pp, elapsed_time, node = run_search(_p, s, _h)
+            results.append([pname, sname+" "+h, elapsed_time, 
+                            len(node.solution()), pp.succs, 
+                            pp.goal_tests, pp.states])
 
 
     import pandas as pd
-    res = pd.DataFrame(results, columns=['Problem', 'Search', 'Elapsed Time (s)', 'Node Expansions',
+    res = pd.DataFrame(results, columns=['Problem', 'Search', 'Elapsed Time', 
+                                         'Solution size', 'Node Expansions',
                                          'Goal Tests', 'New Nodes'])
 
     print(res.to_csv(sep='|', index=False, float_format='%.2f')) 
+    writer = pd.ExcelWriter('out.xlsx')
+    res.to_excel(writer, 'Results')
+    writer.save()
     #print(res.to_html())
 
     visualize(res)
 
 def visualize(result):
-    from altair import Chart, Y, Scale
+    from altair import Chart, Color, Y, Scale
 
 
     #chart = LayeredChart(result)
@@ -122,7 +128,8 @@ def visualize(result):
     
 
     chart = Chart(result).mark_point().encode(
-        x='Search:O', color='Problem:O', y=Y('Elapsed Time (s):Q', scale=Scale(type='log')))
+        x='Search:O', color='Problem:O', y=Y('Elapsed Time:Q',
+        scale=Scale(type='log')))
        # x='Search:O', color='Problem:O', y='Elapsed Time (s):Q')
 #    with open('out.html', 'w') as f:
 #       f.write(html) 
