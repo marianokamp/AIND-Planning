@@ -110,16 +110,18 @@ def main(p_choices, s_choices):
     res = pd.DataFrame(results, columns=['Problem', 'Search', 'Elapsed Time', 
                                          'Solution size', 'Node Expansions',
                                          'Goal Tests', 'New Nodes'])
+    
+    fileName = "results_p("+str(p_choices)+")s("+str(s_choices)+")"
 
     print(res.to_csv(sep='|', index=False, float_format='%.2f')) 
-    writer = pd.ExcelWriter('out.xlsx')
+    writer = pd.ExcelWriter(fileName+'.xlsx')
     res.to_excel(writer, 'Results')
     writer.save()
     #print(res.to_html())
 
-    visualize(res)
+    visualize(res, fileName)
 
-def visualize(result):
+def visualize(result, fileName):
     from altair import Chart, Color, Y, Scale
 
 
@@ -133,7 +135,7 @@ def visualize(result):
        # x='Search:O', color='Problem:O', y='Elapsed Time (s):Q')
 #    with open('out.html', 'w') as f:
 #       f.write(html) 
-    chart.savechart("out.svg")
+    chart.savechart(fileName+".svg")
 
 def show_solution(node, elapsed_time, problem):
     print("Plan length: {}  Time elapsed in seconds: {}".format(len(node.solution()), elapsed_time))
