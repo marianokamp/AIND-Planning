@@ -130,9 +130,9 @@ def visualize(result, fileName):
     
 
     chart = Chart(result).mark_point().encode(
-        x='Search:O', color='Problem:O', y=Y('Elapsed Time:Q',
-        scale=Scale(type='log')))
-       # x='Search:O', color='Problem:O', y='Elapsed Time (s):Q')
+        #x='Search:O', color='Problem:O', y=Y('Elapsed Time:Q',
+        #scale=Scale(type='log')))
+        x='Search:O', color='Problem:O', y='Elapsed Time:Q')
 #    with open('out.html', 'w') as f:
 #       f.write(html) 
     chart.savechart(fileName+".svg")

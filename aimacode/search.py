@@ -137,12 +137,20 @@ def tree_search(problem, frontier):
     """Search through the successors of a problem to find a goal.
     The argument frontier should be an empty queue.
     Don't worry about repeated paths to a state. [Figure 3.7]"""
+    print("tree search")
+ 
+    previous = None
+
     frontier.append(Node(problem.initial))
     while frontier:
         node = frontier.pop()
         if problem.goal_test(node.state):
             return node
+        if node == previous:
+            print("leveled off")
+            return node
         frontier.extend(node.expand(problem))
+        previous = node
     return None
 
 
@@ -150,6 +158,7 @@ def graph_search(problem, frontier):
     """Search through the successors of a problem to find a goal.
     The argument frontier should be an empty queue.
     If two paths reach a state, only use the first one. [Figure 3.7]"""
+    print("graph_search")
     frontier.append(Node(problem.initial))
     explored = set()
     while frontier:
@@ -242,12 +251,20 @@ def depth_limited_search(problem, limit=50):
             return 'cutoff'
         else:
             cutoff_occurred = False
+            same = True
             for child in node.expand(problem):
-                result = recursive_dls(child, problem, limit - 1)
-                if result == 'cutoff':
-                    cutoff_occurred = True
-                elif result is not None:
-                    return result
+                if (node != child):
+                    same = False
+                    result = recursive_dls(child, problem, limit - 1)
+                    if result == 'cutoff':
+                        cutoff_occurred = True
+                    elif result is not None:
+                        return result
+                else:
+                    print("node == child")
+            if same:
+                print("dls leveled off")
+                return node
             return 'cutoff' if cutoff_occurred else None
 
     # Body of depth_limited_search:
