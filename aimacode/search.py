@@ -146,9 +146,10 @@ def tree_search(problem, frontier):
         node = frontier.pop()
         if problem.goal_test(node.state):
             return node
-        if node == previous:
+        if False and node == previous:
             print("leveled off")
-            return node
+            continue
+            #return node
         frontier.extend(node.expand(problem))
         previous = node
     return None
@@ -253,7 +254,7 @@ def depth_limited_search(problem, limit=50):
             cutoff_occurred = False
             same = True
             for child in node.expand(problem):
-                if (node != child):
+                if (False and node != child):
                     same = False
                     result = recursive_dls(child, problem, limit - 1)
                     if result == 'cutoff':
@@ -262,7 +263,7 @@ def depth_limited_search(problem, limit=50):
                         return result
                 else:
                     print("node == child")
-            if same:
+            if False and same:
                 print("dls leveled off")
                 return node
             return 'cutoff' if cutoff_occurred else None

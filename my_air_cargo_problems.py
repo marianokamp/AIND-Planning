@@ -237,7 +237,7 @@ class AirCargoProblem(Problem):
         return pg_levelsum
 
     @lru_cache(maxsize=8192)
-    def h_ignore_preconditions(self, node: Node):
+    def h_ignore_preconditions_old(self, node: Node):
         """This heuristic estimates the minimum number of actions that must be
         carried out from the current state in order to satisfy all of the goal
         conditions by ignoring the preconditions required for an action to be
@@ -251,8 +251,15 @@ class AirCargoProblem(Problem):
                 count += 1
 
         return count
+    def h_ignore_preconditions(self, node: Node):
+        count = 0
+        kb = PropKB()
+        kb.tell(decode_state(node.state, self.state_map).pos_sentence())
+        for clause in self.goal:
+            if clause not in kb.clauses:
+                count += 1
 
-
+        return count
 def air_cargo_p1() -> AirCargoProblem:
     cargos = ['C1', 'C2']
     planes = ['P1', 'P2']

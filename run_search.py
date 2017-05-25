@@ -36,6 +36,7 @@ SEARCHES = [["breadth_first_search", breadth_first_search, ""],
             ['astar_search', astar_search, 'h_1'],
             ['astar_search', astar_search, 'h_ignore_preconditions'],
             ['astar_search', astar_search, 'h_pg_levelsum'],
+#            ['astar_search', astar_search, 'h_ignore_preconditions2'],
             ]
 
 
@@ -130,12 +131,12 @@ def visualize(result, fileName):
     
 
     chart = Chart(result).mark_point().encode(
-        #x='Search:O', color='Problem:O', y=Y('Elapsed Time:Q',
-        #scale=Scale(type='log')))
-        x='Search:O', color='Problem:O', y='Elapsed Time:Q')
+        x='Search:O', color='Problem:O', y=Y('Elapsed Time:Q',
+        scale=Scale(type='log')))
+        #x='Search:O', color='Problem:O', y='Elapsed Time:Q')
 #    with open('out.html', 'w') as f:
 #       f.write(html) 
-    chart.savechart(fileName+".svg")
+    chart.savechart(fileName+".l.svg")
 
 def show_solution(node, elapsed_time, problem):
     print("Plan length: {}  Time elapsed in seconds: {}".format(len(node.solution()), elapsed_time))

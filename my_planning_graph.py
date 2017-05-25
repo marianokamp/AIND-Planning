@@ -320,7 +320,8 @@ class PlanningGraph():
                 # and to state that results from this action
                 for state_node in self.s_levels[level]:
                     state_node.children.add(action_node)
-                    state_node.parents.add(action_node)
+                    action_node.parents.add(state_node)
+                    #state_node.parents.add(action_node)
         # new action level
         self.a_levels.append(nodes)
 
@@ -352,7 +353,7 @@ class PlanningGraph():
 
                 state_nodes.add(state_node)
                 state_node.parents.add(action_node)
-                state_node.children.add(action_node)
+                action_node.children.add(state_node)
         
         self.s_levels.append(state_nodes)
 
@@ -471,6 +472,11 @@ class PlanningGraph():
             for parent_a2 in node_a2.parents:
                if parent_a1.is_mutex(parent_a2): # or parent_a2.is_mutex(parent_a1):
                     return True
+
+        for parent_a2 in node_a2.parents:
+            for parent_a1 in node_a1.parents:
+                if parent_a2.is_mutex(parent_a1):
+                   return True
         return False
 
     def update_s_mutex(self, nodeset: set):
